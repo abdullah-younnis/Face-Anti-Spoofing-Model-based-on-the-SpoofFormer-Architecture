@@ -208,10 +208,9 @@ __marimo__/
 
 # Project-specific ignores
 
-# Dataset
-dataset/
-raw_data/
-data/
+# Dataset (not src/spoofformer/data/)
+/dataset/
+/raw_data/
 
 # Model checkpoints and exports (keep folders, ignore files)
 checkpoints/*.pth

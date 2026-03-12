@@ -7,8 +7,14 @@ A PyTorch implementation of a Vision Transformer (ViT) based face anti-spoofing 
 ## Quick Start
 
 ```bash
+<<<<<<< Updated upstream
 # 1. Install
 git clone https://github.com/abdullah-younnis/Face-Anti-Spoofing-Model-based-on-the-SpoofFormer-Architecture.git
+=======
+# 1. Clone
+git clone https://github.com/yourusername/spoofformer.git
+cd spoofformer
+>>>>>>> Stashed changes
 
 # 2. Create virtual environment and download requirements
 python -m venv .venv
@@ -16,14 +22,17 @@ source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate   # Windows
 pip install -r requirements.txt
 
-# 3. Download dataset
+# 3. Install package
+pip install -e .
+
+# 4. Download dataset
 pip install kagglehub
 python scripts/download_dataset.py
 
-# 4. Train
+# 5. Train
 python train.py --data_root dataset --model_version tiny --augment strong --epochs 100
 
-# 5. Inference
+# 6. Inference
 python inference.py --model checkpoints/best_model.pth --image path/to/face.jpg
 ```
 
@@ -69,7 +78,10 @@ python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate   # Windows
 
-# Install dependencies
+# Install package (editable mode)
+pip install -e .
+
+# Or install dependencies only
 pip install -r requirements.txt
 ```
 

@@ -24,10 +24,10 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from torch.utils.data import DataLoader, WeightedRandomSampler
 
-from spoofformer.models import SpoofFormer
-from spoofformer.config import ModelConfig, TrainingConfig
-from spoofformer.data import FASDataset, get_transforms
-from spoofformer.training import Trainer
+from src.spoofformer.models import SpoofFormer
+from src.spoofformer.config import ModelConfig, TrainingConfig
+from src.spoofformer.data import FASDataset, get_transforms
+from src.spoofformer.training import Trainer
 
 logging.basicConfig(
     level=logging.INFO,
@@ -295,3 +295,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+

@@ -205,3 +205,67 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Project-specific ignores
+
+# Dataset
+dataset/
+raw_data/
+data/
+
+# Model checkpoints and exports (keep folders, ignore files)
+checkpoints/*.pth
+exports/*.onnx
+exports/*.pt
+*.bin
+*.safetensors
+
+# WandB
+wandb/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Kaggle
+.kaggle/
+
+# Cache directories
+.cache/
+*.cache
+hub/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+
+# Profiling
+*.prof
+*.lprof
+
+# Large files
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+
+# Kiro
+.kiro/

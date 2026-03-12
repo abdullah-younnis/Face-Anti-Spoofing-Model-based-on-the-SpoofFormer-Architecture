@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv
+env
+*.egg-info
+dist
+build
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Project
+dataset
+raw_data
+checkpoints
+exports
+wandb
+logs
+*.pth
+*.onnx
+*.pt
+.pytest_cache
+.hypothesis
+.mypy_cache
+.ruff_cache
+
+# Docs
+*.md
+!requirements.txt
+docs
+
+# Tests (optional - include if you want to run tests in container)
+# tests
+
+# Misc
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.kiro

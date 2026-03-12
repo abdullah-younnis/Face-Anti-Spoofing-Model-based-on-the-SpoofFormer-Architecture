@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # Training service (CPU)
+  train:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: training
+    volumes:
+      - ./dataset:/app/dataset:ro
+      - ./checkpoints:/app/checkpoints
+      - ./exports:/app/exports
+      - ./configs:/app/configs:ro
+    command: >
+      python train.py 
+      --data_root dataset 
+      --epochs 100 
+      --model_version small
+      --augment strong
+      --label_smoothing 0.1
+      --balance_classes
+      --focal_loss
+      --early_stopping 15
+
+  # Training service (GPU) - Anti-overfitting config
+  train-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu
+    volumes:
+      - ./dataset:/app/dataset:ro
+      - ./checkpoints:/app/checkpoints
+      - ./exports:/app/exports
+      - ./configs:/app/configs:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: >
+      python train.py 
+      --data_root dataset 
+      --epochs 100 
+      --model_version tiny
+      --augment strong
+      --label_smoothing 0.1
+      --dropout 0.3
+      --balance_classes
+      --focal_loss
+      --early_stopping 20
+
+  # Inference service
+  inference:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: inference
+    volumes:
+      - ./checkpoints:/app/checkpoints:ro
+      - ./exports:/app/exports:ro
+      - ./input:/app/input:ro
+    command: >
+      python inference.py 
+      --model checkpoints/best_model.pth 
+      --image input/test.jpg
+
+  # Export service
+  export:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: training
+    volumes:
+      - ./checkpoints:/app/checkpoints:ro
+      - ./exports:/app/exports
+    command: >
+      python scripts/export_model.py 
+      --checkpoint checkpoints/best_model.pth 
+      --output-dir exports

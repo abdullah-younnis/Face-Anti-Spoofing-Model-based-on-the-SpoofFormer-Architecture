@@ -1,0 +1,59 @@
+# =============================================================================
+# SpoofFormer GPU Docker Image
+# For training with CUDA support
+# =============================================================================
+
+# Use NVIDIA CUDA base image
+FROM nvidia/cuda:11.8-cudnn8-runtime-ubuntu22.04 as base
+
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install Python and system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.10 \
+    python3.10-venv \
+    python3-pip \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s /usr/bin/python3.10 /usr/bin/python
+
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash appuser
+
+WORKDIR /app
+
+# -----------------------------------------------------------------------------
+# Install dependencies
+# -----------------------------------------------------------------------------
+COPY requirements.txt .
+
+# Install PyTorch with CUDA 11.8 support first
+RUN pip install --no-cache-dir \
+    torch==2.1.0 torchvision==0.16.0 --index-url https://download.pytorch.org/whl/cu118
+
+# Install other requirements (skip the extra-index-url line and torch/torchvision)
+RUN sed '/extra-index-url/d; /^torch/d; /^torchvision/d' requirements.txt > requirements_filtered.txt && \
+    pip install --no-cache-dir -r requirements_filtered.txt
+
+# -----------------------------------------------------------------------------
+# Copy application
+# -----------------------------------------------------------------------------
+COPY --chown=appuser:appuser . .
+
+# Switch to non-root user
+USER appuser
+
+# Set Python path
+ENV PYTHONPATH=/app/src:$PYTHONPATH
+
+# Default command
+CMD ["python", "train.py", "--help"]

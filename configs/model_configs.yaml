@@ -1,0 +1,76 @@
+# SpoofFormer Model Configurations
+# Use with: python train.py --config configs/model_configs.yaml --model_version small
+
+# ViT-Tiny: Fastest, lowest memory, good for testing
+tiny:
+  embed_dim: 192
+  num_heads: 3
+  num_layers: 12
+  mlp_ratio: 4.0
+  dropout: 0.1
+  attention_dropout: 0.0
+  extract_layers: [8, 11]
+  patch_size: 16
+  img_size: 224
+
+# ViT-Small: Good balance of speed and accuracy (default)
+small:
+  embed_dim: 384
+  num_heads: 6
+  num_layers: 12
+  mlp_ratio: 4.0
+  dropout: 0.1
+  attention_dropout: 0.0
+  extract_layers: [8, 11]
+  patch_size: 16
+  img_size: 224
+
+# ViT-Base: Higher accuracy, more compute
+base:
+  embed_dim: 768
+  num_heads: 12
+  num_layers: 12
+  mlp_ratio: 4.0
+  dropout: 0.1
+  attention_dropout: 0.0
+  extract_layers: [8, 11]
+  patch_size: 16
+  img_size: 224
+
+# ViT-Large: Highest accuracy, requires significant GPU memory
+large:
+  embed_dim: 1024
+  num_heads: 16
+  num_layers: 24
+  mlp_ratio: 4.0
+  dropout: 0.1
+  attention_dropout: 0.0
+  extract_layers: [16, 23]
+  patch_size: 16
+  img_size: 224
+
+# Custom configurations for specific use cases
+
+# Lightweight model for mobile/edge deployment
+mobile:
+  embed_dim: 192
+  num_heads: 3
+  num_layers: 6
+  mlp_ratio: 4.0
+  dropout: 0.0
+  attention_dropout: 0.0
+  extract_layers: [3, 5]
+  patch_size: 16
+  img_size: 224
+
+# High-resolution variant for detailed analysis
+small_hr:
+  embed_dim: 384
+  num_heads: 6
+  num_layers: 12
+  mlp_ratio: 4.0
+  dropout: 0.1
+  attention_dropout: 0.0
+  extract_layers: [8, 11]
+  patch_size: 16
+  img_size: 384

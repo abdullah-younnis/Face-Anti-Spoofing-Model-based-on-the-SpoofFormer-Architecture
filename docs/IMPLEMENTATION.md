@@ -17,9 +17,12 @@ This document provides a comprehensive technical description of the SpoofFormer 
 9. [Inference System](#inference-system)
 10. [Model Configuration System](#model-configuration-system)
 11. [Checkpoint System](#checkpoint-system)
-12. [WandB Integration](#wandb-integration)
-13. [Design Decisions](#design-decisions)
-14. [Training Results](#training-results)
+12. [Dataset System](#dataset-system)
+13. [WandB Integration](#wandb-integration)
+14. [Design Decisions](#design-decisions)
+15. [Training Results](#training-results)
+16. [Docker Deployment](#docker-deployment)
+17. [Installation](#installation)
 
 ---
 
@@ -461,9 +464,51 @@ checkpoint = {
 }
 ```
 
+### Checkpoint Saving Strategy
+
+- Regular checkpoints saved every N epochs (configurable via `save_every`)
+- Best model saved when validation ACER improves
+- Best model path: `checkpoints/best_model.pth`
+
 ### Backward Compatibility
 
 For checkpoints without embedded config, the system auto-detects configuration from weight shapes (see Model Configuration Auto-Detection above).
+
+## Dataset System
+
+### Dataset Download and Organization
+
+The `scripts/download_dataset.py` script handles:
+1. Downloading NUAA dataset from Kaggle
+2. Automatic 80/20 train/val split
+3. Resizing images to 224x224
+4. Organizing into required folder structure
+
+```bash
+python scripts/download_dataset.py              # Full dataset
+python scripts/download_dataset.py --max-images 5000  # Limited
+python scripts/download_dataset.py --synthetic  # Synthetic test data
+```
+
+### FASDataset Class
+
+```python
+class FASDataset(Dataset):
+    """Face Anti-Spoofing Dataset.
+    
+    Expects structure:
+        root/
+            train/ or val/
+                real/   (label=1)
+                spoof/  (label=0)
+    """
+```
+
+Features:
+- Automatic label assignment from folder names
+- Configurable transforms per split
+- Handles corrupted images gracefully
+- Returns (image_tensor, label) tuples
 
 ## WandB Integration
 
@@ -602,6 +647,59 @@ This configuration:
 4. **Lightweight Variants**: Distillation for mobile deployment
 5. **Multi-modal Fusion**: Combine RGB with depth or IR when available
 6. **Test-Time Augmentation**: Average predictions over augmented versions
+
+## Docker Deployment
+
+### Available Images
+
+| Image | Target | Use Case |
+|-------|--------|----------|
+| `spoofformer:latest` | training | Full training with all dependencies |
+| `spoofformer:gpu` | training | GPU-accelerated training (CUDA 11.8) |
+| `spoofformer:inference` | inference | Lightweight inference-only image |
+
+### Volume Mounts
+
+| Mount | Purpose | Mode |
+|-------|---------|------|
+| `/app/dataset` | Training data | Read-only |
+| `/app/checkpoints` | Model checkpoints | Read-write |
+| `/app/exports` | Exported models | Read-write |
+| `/app/configs` | Model configurations | Read-only |
+| `/app/input` | Inference input images | Read-only |
+
+### Package Installation
+
+Docker images use `pip install -e .` to properly install the `spoofformer` package, ensuring all imports work correctly.
+
+## Installation
+
+### Package Structure
+
+The project uses a `src` layout with `pyproject.toml`:
+
+```
+src/
+    spoofformer/
+        __init__.py
+        config.py
+        data/
+        models/
+        training/
+        inference/
+        export/
+```
+
+### Editable Installation
+
+```bash
+pip install -e .
+```
+
+This installs `spoofformer` as an editable package, allowing:
+- Direct imports: `from spoofformer.models import SpoofFormer`
+- Live code changes without reinstalling
+- Proper package resolution in Docker containers
 
 ## References
 

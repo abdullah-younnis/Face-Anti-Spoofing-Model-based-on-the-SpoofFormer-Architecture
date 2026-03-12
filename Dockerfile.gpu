@@ -49,11 +49,11 @@ RUN sed '/extra-index-url/d; /^torch/d; /^torchvision/d' requirements.txt > requ
 # -----------------------------------------------------------------------------
 COPY --chown=appuser:appuser . .
 
+# Install the package
+RUN pip install --no-cache-dir -e .
+
 # Switch to non-root user
 USER appuser
-
-# Set Python path
-ENV PYTHONPATH=/app/src:$PYTHONPATH
 
 # Default command
 CMD ["python", "train.py", "--help"]

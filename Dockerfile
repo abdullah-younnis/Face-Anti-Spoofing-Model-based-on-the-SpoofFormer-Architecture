@@ -52,11 +52,13 @@ FROM base as training
 COPY --from=builder /root/.local /home/appuser/.local
 
 # Ensure scripts are in PATH
-ENV PATH=/home/appuser/.local/bin:$PATH \
-    PYTHONPATH=/app/src:$PYTHONPATH
+ENV PATH=/home/appuser/.local/bin:$PATH
 
 # Copy application code
 COPY --chown=appuser:appuser . .
+
+# Install the package
+RUN pip install --user -e .
 
 # Switch to non-root user
 USER appuser
@@ -71,13 +73,16 @@ FROM base as inference
 
 # Copy only necessary packages (exclude training-only deps)
 COPY --from=builder /root/.local /home/appuser/.local
-ENV PATH=/home/appuser/.local/bin:$PATH \
-    PYTHONPATH=/app/src:$PYTHONPATH
+ENV PATH=/home/appuser/.local/bin:$PATH
 
 # Copy only inference-related code
 COPY --chown=appuser:appuser src/spoofformer /app/src/spoofformer
 COPY --chown=appuser:appuser inference.py /app/
 COPY --chown=appuser:appuser configs /app/configs
+COPY --chown=appuser:appuser pyproject.toml /app/
+
+# Install the package
+RUN pip install --user -e .
 
 # Switch to non-root user
 USER appuser

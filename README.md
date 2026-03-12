@@ -7,20 +7,14 @@ A PyTorch implementation of a Vision Transformer (ViT) based face anti-spoofing 
 ## Quick Start
 
 ```bash
-<<<<<<< Updated upstream
-# 1. Install
-git clone https://github.com/abdullah-younnis/Face-Anti-Spoofing-Model-based-on-the-SpoofFormer-Architecture.git
-=======
 # 1. Clone
-git clone https://github.com/yourusername/spoofformer.git
-cd spoofformer
->>>>>>> Stashed changes
+git clone https://github.com/abdullah-younnis/Face-Anti-Spoofing-Model-based-on-the-SpoofFormer-Architecture.git
+cd Face-Anti-Spoofing-Model-based-on-the-SpoofFormer-Architecture
 
-# 2. Create virtual environment and download requirements
+# 2. Create virtual environment
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate   # Windows
-pip install -r requirements.txt
 
 # 3. Install package
 pip install -e .
@@ -240,37 +234,55 @@ python scripts/export_model.py --checkpoint checkpoints/best_model.pth --format 
 ### Build
 
 ```bash
-# CPU
+# CPU (training)
 docker build -t spoofformer:latest --target training .
 
-# GPU
+# GPU (training)
 docker build -t spoofformer:gpu -f Dockerfile.gpu .
 
-# Inference only
+# Inference only (lightweight)
 docker build -t spoofformer:inference --target inference .
 ```
 
 ### Run
 
 ```bash
+# Training (CPU)
+docker run \
+    -v $(pwd)/dataset:/app/dataset:ro \
+    -v $(pwd)/checkpoints:/app/checkpoints \
+    -v $(pwd)/configs:/app/configs:ro \
+    spoofformer:latest \
+    python train.py --data_root dataset --model_version tiny --augment strong --epochs 100
+
 # Training (GPU)
 docker run --gpus all \
     -v $(pwd)/dataset:/app/dataset:ro \
     -v $(pwd)/checkpoints:/app/checkpoints \
+    -v $(pwd)/configs:/app/configs:ro \
     spoofformer:gpu \
-    python train.py --data_root dataset --model_version tiny --augment strong
+    python train.py --data_root dataset --model_version tiny --augment strong --epochs 100
 
 # Inference
 docker run \
     -v $(pwd)/checkpoints:/app/checkpoints:ro \
+    -v $(pwd)/configs:/app/configs:ro \
     -v $(pwd)/input:/app/input:ro \
     spoofformer:inference \
     python inference.py --model checkpoints/best_model.pth --image input/test.jpg
+
+# Export model
+docker run \
+    -v $(pwd)/checkpoints:/app/checkpoints:ro \
+    -v $(pwd)/exports:/app/exports \
+    spoofformer:latest \
+    python scripts/export_model.py --checkpoint checkpoints/best_model.pth
 ```
 
 ### Docker Compose
 
 ```bash
+docker-compose run train       # CPU training
 docker-compose run train-gpu   # GPU training
 docker-compose run inference   # Inference
 docker-compose run export      # Export model
@@ -354,6 +366,4 @@ MIT License
 - [An Image is Worth 16x16 Words](https://arxiv.org/abs/2010.11929)
 - [Deep Learning for Face Anti-Spoofing: A Survey](https://arxiv.org/abs/2106.14948)
 - [Focal Loss for Dense Object Detection](https://arxiv.org/abs/1708.02002)
-
-
-
+- [Spoof-formerNet: The Face Anti Spoofing Identifier with a Two Stage High Resolution Vision Transformer (HR-ViT) Network](https://www.researchgate.net/publication/394296768_Spoof-formerNet_The_Face_Anti_Spoofing_Identifier_with_a_Two_Stage_High_Resolution_Vision_Transformer_HR-ViT_Network)

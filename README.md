@@ -2,6 +2,8 @@
 
 A PyTorch implementation of a Vision Transformer (ViT) based face anti-spoofing model with intermediate supervision.
 
+![Model Architecture](docs/Model-Arch.jpg)
+
 ## Quick Start
 
 ```bash

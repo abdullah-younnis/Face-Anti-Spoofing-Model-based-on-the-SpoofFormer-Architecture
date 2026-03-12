@@ -8,7 +8,7 @@ A PyTorch implementation of a Vision Transformer (ViT) based face anti-spoofing 
 
 ```bash
 # 1. Install
-git clone https://github.com/yourusername/spoofformer.git
+git clone https://github.com/abdullah-younnis/Face-Anti-Spoofing-Model-based-on-the-SpoofFormer-Architecture.git
 cd spoofformer
 pip install -r requirements.txt
 
@@ -311,3 +311,4 @@ MIT License
 - [An Image is Worth 16x16 Words](https://arxiv.org/abs/2010.11929)
 - [Deep Learning for Face Anti-Spoofing: A Survey](https://arxiv.org/abs/2106.14948)
 - [Focal Loss for Dense Object Detection](https://arxiv.org/abs/1708.02002)
+

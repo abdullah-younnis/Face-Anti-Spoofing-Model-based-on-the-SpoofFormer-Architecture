@@ -9,13 +9,12 @@ A PyTorch implementation of a Vision Transformer (ViT) based face anti-spoofing 
 ```bash
 # 1. Install
 git clone https://github.com/abdullah-younnis/Face-Anti-Spoofing-Model-based-on-the-SpoofFormer-Architecture.git
-cd Face-Anti-Spoofing-Model-based-on-the-SpoofFormer-Architecture\src\spoofformer
-pip install -r requirements.txt
 
-# 2. Create virtual environment
+# 2. Create virtual environment and download requirements
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate   # Windows
+pip install -r requirements.txt
 
 # 3. Download dataset
 pip install kagglehub
@@ -63,8 +62,7 @@ Trained on NUAA dataset (~10k images) with ViT-Tiny and anti-overfitting setting
 
 ```bash
 # Clone and setup
-git clone https://github.com/yourusername/spoofformer.git
-cd spoofformer
+git clone https://github.com/abdullah-younnis/Face-Anti-Spoofing-Model-based-on-the-SpoofFormer-Architecture.git
 
 # Create virtual environment
 python -m venv .venv
@@ -279,21 +277,54 @@ docker-compose run export      # Export model
 ## Project Structure
 
 ```
-spoofformer/
-    configs/model_configs.yaml
-    src/spoofformer/
-        models/
-        data/
-        training/
-        inference/
-        export/
-    scripts/
-        download_dataset.py
-        export_model.py
-    train.py
-    inference.py
-    tests/
-    docs/IMPLEMENTATION.md
+dir/
+├── configs/
+│   └── model_configs.yaml          # Model architecture configurations (tiny/small/base/large/mobile)
+├── docs/
+│   ├── IMPLEMENTATION.md           # Technical implementation details
+│   ├── Model-Arch.jpg              # Architecture diagram
+│   └── paper_summary.md            # Paper summary document
+├── scripts/
+│   ├── download_dataset.py         # Dataset downloader and organizer
+│   └── export_model.py             # Model export script (ONNX/TorchScript)
+├── src/spoofformer/
+│   ├── data/
+│   │   ├── augmentation.py         # Augmentation utilities
+│   │   ├── dataset.py              # FASDataset class
+│   │   └── transforms.py           # Light/normal/strong transforms
+│   ├── export/
+│   │   ├── onnx_export.py          # ONNX export functionality
+│   │   ├── quantization.py         # Model quantization
+│   │   └── torchscript_export.py   # TorchScript export
+│   ├── inference/
+│   │   ├── engine.py               # InferenceEngine (PyTorch/ONNX/TorchScript)
+│   │   ├── preprocessing.py        # Image preprocessing
+│   │   └── result.py               # LivenessResult dataclass
+│   ├── models/
+│   │   ├── classification_head.py  # Binary classification head
+│   │   ├── patch_embedding.py      # Patch embedding layer
+│   │   ├── spoofformer.py          # Main SpoofFormer model
+│   │   └── transformer.py          # Transformer encoder blocks
+│   ├── training/
+│   │   ├── metrics.py              # AUC, EER, ACER, APCER, BPCER
+│   │   └── trainer.py              # Training loop, WandB, checkpointing
+│   └── config.py                   # ModelConfig, TrainingConfig dataclasses
+├── tests/
+│   ├── conftest.py                 # Pytest fixtures
+│   ├── test_config.py              # Config tests
+│   └── test_models.py              # Model tests
+├── checkpoints/                    # Saved model checkpoints (.pth)
+├── exports/                        # Exported models (.onnx, .pt)
+├── dataset/                        # Train/val data (gitignored)
+├── train.py                        # Training entry point
+├── inference.py                    # Inference CLI
+├── requirements.txt                # Python dependencies
+├── Dockerfile                      # CPU Docker image
+├── Dockerfile.gpu                  # GPU Docker image
+├── docker-compose.yml              # Docker compose services
+├── README.md                       # Project documentation
+└── LICENSE                         # MIT License
+
 ```
 
 ## Testing
@@ -311,5 +342,6 @@ MIT License
 - [An Image is Worth 16x16 Words](https://arxiv.org/abs/2010.11929)
 - [Deep Learning for Face Anti-Spoofing: A Survey](https://arxiv.org/abs/2106.14948)
 - [Focal Loss for Dense Object Detection](https://arxiv.org/abs/1708.02002)
+
 
 

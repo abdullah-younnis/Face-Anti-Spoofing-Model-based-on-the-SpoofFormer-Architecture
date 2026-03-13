@@ -4,7 +4,7 @@
 # =============================================================================
 
 # Use NVIDIA CUDA base image
-FROM nvidia/cuda:11.8-cudnn8-runtime-ubuntu22.04 as base
+FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04 AS base
 
 # Prevent interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -49,8 +49,8 @@ RUN sed '/extra-index-url/d; /^torch/d; /^torchvision/d' requirements.txt > requ
 # -----------------------------------------------------------------------------
 COPY --chown=appuser:appuser . .
 
-# Install the package
-RUN pip install --no-cache-dir -e .
+# Install the package editable installs are usually unnecessary
+RUN pip install --no-cache-dir .
 
 # Switch to non-root user
 USER appuser

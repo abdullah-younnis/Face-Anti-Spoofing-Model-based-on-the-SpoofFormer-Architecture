@@ -267,15 +267,15 @@ docker run --gpus all \
 docker run \
     -v $(pwd)/checkpoints:/app/checkpoints:ro \
     -v $(pwd)/configs:/app/configs:ro \
-    -v $(pwd)/input:/app/input:ro \
+    -v $(pwd)/infer-test:/app/infer-test:ro \
     spoofformer:inference \
-    python inference.py --model checkpoints/best_model.pth --image input/test.jpg
+    python inference.py --model /app/checkpoints/best_model.pth --image /app/infer-test/real-testing.jpg
 
 # Export model
+# Training image contains the full repository.
 docker run \
-    -v $(pwd)/checkpoints:/app/checkpoints:ro \
-    -v $(pwd)/exports:/app/exports \
-    spoofformer:latest \
+    -v $(pwd):/app \
+    spoofformer:gpu \
     python scripts/export_model.py --checkpoint checkpoints/best_model.pth
 ```
 
